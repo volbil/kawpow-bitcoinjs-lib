@@ -42,6 +42,7 @@ function isOutput(out) {
 class Transaction {
   constructor() {
     this.version = 1;
+    this.timestamp = parseInt(Date.now() / 1000);
     this.locktime = 0;
     this.ins = [];
     this.outs = [];
@@ -83,6 +84,7 @@ class Transaction {
     }
     const tx = new Transaction();
     tx.version = readInt32();
+    tx.timestamp = readInt32();
     const marker = buffer.readUInt8(offset);
     const flag = buffer.readUInt8(offset + 1);
     let hasWitnesses = false;
@@ -192,6 +194,7 @@ class Transaction {
   clone() {
     const newTx = new Transaction();
     newTx.version = this.version;
+    newTx.timestamp = this.timestamp;
     newTx.locktime = this.locktime;
     newTx.ins = this.ins.map(txIn => {
       return {
@@ -351,6 +354,7 @@ class Transaction {
     toffset = 0;
     const input = this.ins[inIndex];
     writeUInt32(this.version);
+    writeUInt32(this.timestamp);
     writeSlice(hashPrevouts);
     writeSlice(hashSequence);
     writeSlice(input.hash);
@@ -396,7 +400,7 @@ class Transaction {
         return sum + 40 + varSliceSize(input.script);
       }, 0) +
       this.outs.reduce((sum, output) => {
-        return sum + 8 + varSliceSize(output.script);
+        return sum + 10 + varSliceSize(output.script);
       }, 0) +
       (hasWitnesses
         ? this.ins.reduce((sum, input) => {
@@ -406,7 +410,7 @@ class Transaction {
     );
   }
   __toBuffer(buffer, initialOffset, _ALLOW_WITNESS) {
-    if (!buffer) buffer = Buffer.allocUnsafe(this.__byteLength(_ALLOW_WITNESS));
+    if (!buffer) buffer = Buffer.alloc(this.__byteLength(_ALLOW_WITNESS));
     let offset = initialOffset || 0;
     function writeSlice(slice) {
       offset += slice.copy(buffer, offset);
@@ -436,6 +440,7 @@ class Transaction {
       vector.forEach(writeVarSlice);
     }
     writeInt32(this.version);
+    writeInt32(this.timestamp);
     const hasWitnesses = _ALLOW_WITNESS && this.hasWitnesses();
     if (hasWitnesses) {
       writeUInt8(Transaction.ADVANCED_TRANSACTION_MARKER);
@@ -463,6 +468,7 @@ class Transaction {
       });
     }
     writeUInt32(this.locktime);
+    console.log("buffer:", buffer)
     // avoid slicing unless necessary
     if (initialOffset !== undefined) return buffer.slice(initialOffset, offset);
     return buffer;
