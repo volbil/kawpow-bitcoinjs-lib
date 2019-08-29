@@ -56,6 +56,7 @@ class TransactionBuilder {
     this.__INPUTS = [];
     this.__TX = new transaction_1.Transaction();
     this.__TX.version = 2;
+    this.__TX.timestamp = parseInt(Date.now() / 1000);
     this.__USE_LOW_R = false;
     console.warn(
       'Deprecation Warning: TransactionBuilder will be removed in the future. ' +
@@ -69,6 +70,7 @@ class TransactionBuilder {
     const txb = new TransactionBuilder(network);
     // Copy transaction fields
     txb.setVersion(transaction.version);
+    txb.setTimestamp(transaction.timestamp);
     txb.setLockTime(transaction.locktime);
     // Copy outputs (done first to avoid signature invalidation)
     transaction.outs.forEach(txOut => {
@@ -113,6 +115,11 @@ class TransactionBuilder {
     typeforce(types.UInt32, version);
     // XXX: this might eventually become more complex depending on what the versions represent
     this.__TX.version = version;
+  }
+  setTimestamp(timestamp) {
+    typeforce(types.UInt32, timestamp);
+    // XXX: this might eventually become more complex depending on what the timestamps represent
+    this.__TX.timestamp = timestamp;
   }
   addInput(txHash, vout, sequence, prevOutScript) {
     if (!this.__canModifyInputs()) {
