@@ -393,6 +393,7 @@ class Transaction {
   __byteLength(_ALLOW_WITNESS) {
     const hasWitnesses = _ALLOW_WITNESS && this.hasWitnesses();
     return (
+      4 +
       (hasWitnesses ? 10 : 8) +
       varuint.encodingLength(this.ins.length) +
       varuint.encodingLength(this.outs.length) +
@@ -400,7 +401,7 @@ class Transaction {
         return sum + 40 + varSliceSize(input.script);
       }, 0) +
       this.outs.reduce((sum, output) => {
-        return sum + 10 + varSliceSize(output.script);
+        return sum + 8 + varSliceSize(output.script);
       }, 0) +
       (hasWitnesses
         ? this.ins.reduce((sum, input) => {
