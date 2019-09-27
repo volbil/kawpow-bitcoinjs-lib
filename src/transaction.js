@@ -411,7 +411,7 @@ class Transaction {
     );
   }
   __toBuffer(buffer, initialOffset, _ALLOW_WITNESS) {
-    if (!buffer) buffer = Buffer.alloc(this.__byteLength(_ALLOW_WITNESS));
+    if (!buffer) buffer = Buffer.allocUnsafe(this.__byteLength(_ALLOW_WITNESS));
     let offset = initialOffset || 0;
     function writeSlice(slice) {
       offset += slice.copy(buffer, offset);
