@@ -38,7 +38,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/bitcoinjs/bitcoinjs-lib.git"
+    "url": "https://github.com/volbil/kawpow-bitcoinjs-lib.git"
   },
   "files": [
     "src",
@@ -50,7 +50,7 @@
     "bip174": "^1.0.1",
     "bip32": "^2.0.4",
     "bip66": "^1.1.0",
-    "bitcoin-ops": "git://github.com/olexh/bitcoin-ops.git",
+    "bitcoin-ops": "git+https://github.com/olexh/bitcoin-ops.git",
     "bs58check": "^2.0.0",
     "create-hash": "^1.1.0",
     "create-hmac": "^1.1.3",
